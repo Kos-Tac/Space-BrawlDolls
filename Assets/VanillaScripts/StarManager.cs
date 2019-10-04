@@ -9,6 +9,7 @@ public class StarManager : MonoBehaviour
     private GameObject[] stars;
     [SerializeField] private float g;
 
+
     // Start is called before the first frame update
     void Start()
     {
