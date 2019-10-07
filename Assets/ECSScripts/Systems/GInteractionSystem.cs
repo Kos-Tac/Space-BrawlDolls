@@ -8,53 +8,81 @@ using static Unity.Mathematics.math;
 
 namespace StarRagBrawl
 {
-    public class NewSystem : JobComponentSystem
+    public class GInteractionSystem : JobComponentSystem
     {
-        // This declares a new kind of job, which is a unit of work to do.
-        // The job is declared as an IJobForEach<Translation, Rotation>,
-        // meaning it will process all entities in the world that have both
-        // Translation and Rotation components. Change it to process the component
-        // types you want.
-        //
-        // The job is also tagged with the BurstCompile attribute, which means
-        // that the Burst compiler will optimize it for the best performance.
+        public EntityQuery starsGroup;
+
+
         [BurstCompile]
-        struct NewSystemJob : IJobForEach<Translation, Rotation>
+        struct ComputeGInteractionsJob : IJobForEach<StarEntity>
         {
-            // Add fields here that your job needs to do its work.
-            // For example,
-            //    public float deltaTime;
+            [ReadOnly] [DeallocateOnJobCompletion] public  NativeArray<StarEntity> stars;
+            //[WriteOnly] public NativeArray<float3> accRegistry;
 
-            // https://docs.unity3d.com/Packages/com.unity.entities@0.0/manual/manual_iteration.html
 
-            public void Execute(ref Translation translation, [ReadOnly] ref Rotation rotation)
+            public void Execute(ref StarEntity currentStar)
             {
-                // Implement the work to perform for each entity here.
-                // You should only access data that is local or that is a
-                // field on this job. Note that the 'rotation' parameter is
-                // marked as [ReadOnly], which means it cannot be modified,
-                // but allows this job to run in parallel with other jobs
-                // that want to read Rotation component data.
-                // For example,
-                //     translation.Value += mul(rotation.Value, new float3(0, 0, 1)) * deltaTime;
-
-
+                //int starRef=0;
+                float3 accForce = float3(0,0,0);
+                for (int i=0; i<stars.Length; i++)
+                {
+                    //the attraction direction
+                    float3 distVect = stars[i].position.Value - currentStar.position.Value;
+                    bool3 samePosition = currentStar.position.Value != stars[i].position.Value;
+                    //If distance is (0,0,0), we have currentStar being stars[i], so we don't compute
+                    if (samePosition.x||samePosition.y||samePosition.z)
+                    {
+                        float3 distNorm = normalize(distVect);
+                        float attraction = (6.67f * currentStar.mass.Value * stars[i].mass.Value) / (pow(distVect.x, 2) + pow(distVect.y, 2) + pow(distVect.z, 2)) / 10000;
+                        accForce += attraction * distNorm;
+                    }
+                   // else
+                        //starRef = i;
+                }
+                //accRegistry[starRef] = accForce;
+                currentStar.acceleration.Value = accForce;
             }
         }
+        /*
+        [BurstCompile]
+        struct AssignAcc : IJobParallelFor
+        {
+            [DeallocateOnJobCompletion] public NativeArray<StarEntity> stars;
+            [ReadOnly] public NativeArray<float3> accRegistry;
+
+            public void Execute(int chunkIndex)
+            {
+                for (int i = 0; i < stars.Length; i++)
+                {
+                    stars[i].acceleration.Value = accRegistry[i];
+                }
+            }
+        }
+        */
 
         protected override JobHandle OnUpdate(JobHandle inputDependencies)
         {
-            var job = new NewSystemJob();
+            starsGroup = GetEntityQuery(typeof(StarEntity));
+            NativeArray<StarEntity> starArray = starsGroup.ToComponentDataArray<StarEntity>(Allocator.TempJob);
+            //NativeArray<float3> accRegistry = new NativeArray<float3>(starArray.Length, Allocator.Temp);
 
-            // Assign values to the fields on your job here, so that it has
-            // everything it needs to do its work when it runs later.
-            // For example,
-            //     job.deltaTime = UnityEngine.Time.deltaTime;
-
-
-
-            // Now that the job is set up, schedule it to be run. 
-            return job.Schedule(this, inputDependencies);
+            var computeJob = new ComputeGInteractionsJob()
+            {
+                //accRegistry = accRegistry,
+                stars = starArray
+            };
+            var computed = computeJob.Schedule(this, inputDependencies);
+            /*
+            var assigningJob = new AssignAcc()
+            {
+                stars = starArray,
+                accRegistry = accRegistry
+            };*/
+            computed.Complete();
+            //starArray.Dispose();
+            return computed;
         }
+
+
     }
 }

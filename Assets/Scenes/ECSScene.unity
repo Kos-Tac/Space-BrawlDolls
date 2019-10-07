@@ -164,6 +164,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   starCount: 500
+  mass: 2.5
   _mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
   _material: {fileID: 2100000, guid: a5b94f37f6322dd43bc977a6e7999ef7, type: 2}
 --- !u!1 &1760359644

@@ -22,6 +22,7 @@ namespace StarRagBrawl
             public void Execute(ref StarEntity starEntity, ref Translation translation)
             {
                 starEntity.speed.Value += starEntity.acceleration.Value;
+                starEntity.acceleration.Value = 0;
                 starEntity.position.Value += starEntity.speed.Value;
                 translation.Value = starEntity.position.Value;
 
