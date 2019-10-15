@@ -26,7 +26,6 @@ namespace StarRagBrawl {
                 typeof(StarEntity), 
                 typeof(Translation),
                 typeof(RenderMesh),
-                typeof(ColliderDistance2D),
                 typeof(LocalToWorld)
             );
             AddStars(starCount);
