@@ -3,7 +3,7 @@ The aim of this project is to create a game within a simulation which will a liv
 The simulation of stars is done with Unity's DOTS approach, which is a way for me to learn it.
 Then, if possible, a brawl game featuring rag dolls will be created within the simulation using DOTS too.
 
-#Demo 
+# Demo 
 ![alt text](https://github.com/Kos-Tac/Star-RagBrawl/blob/master/Assets/Misc/DemoDOTS.gif )
 
 # Next working on
