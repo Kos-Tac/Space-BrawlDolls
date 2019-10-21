@@ -8,7 +8,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: WhiteStar
-  m_Shader: {fileID: 4800000, guid: 57c80fe54d74aaa43821b233083e4c16, type: 3}
+  m_Shader: {fileID: 4800000, guid: eeb42e20750df72428a7c2e4839b6608, type: 3}
   m_ShaderKeywords: _EMISSION
   m_LightmapFlags: 1
   m_EnableInstancingVariants: 0
@@ -87,4 +87,4 @@ Material:
     m_Colors:
     - _BaseColor: {r: 0, g: 0, b: 0, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
-    - _EmissionColor: {r: 1, g: 1, b: 1, a: 1}
+    - _EmissionColor: {r: 1, g: 0.7037619, b: 0.3443396, a: 1}

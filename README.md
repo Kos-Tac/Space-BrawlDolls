@@ -8,5 +8,5 @@ Then, if possible, a brawl game featuring rag dolls will be created within the s
 
 # Next working on
 Improving gravitationalSystem. Adding collisions.
-Better handling star generation and improving shaders.
-Finding out if particles can be generated with DOTS.
+Better handling star generation.
+Peeking at ragdoll compatibility with DOTS.
